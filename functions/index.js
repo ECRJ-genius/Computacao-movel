@@ -22,20 +22,42 @@ app.post('/ussd',(req,res) => {
     
     //ler as variaveis enviadas via post da API
     const {
-        sessionId.
+        sessionId,
         serviceCode,
         phoneNumber,
         text,
     } = req.body;
 
     let response = "";
+
+    if (text == "") {
+        response = "CON What would you like to check?\n" +
+        "1. My Account\n" +
+        "2. My phone Number";
+
+    } else if (text == "1") {
+        response = "CON Choose account information you want to view\n" +
+        "1. Account Number\n" +
+        "2. Account Balance";
+
+    } else if (text == "2") {
+        response = "END Your phone number is " + phoneNumber;
+
+    } else if (text == "1*1") {
+        const accountNumber = "AKOKDE";
+        response = "END Your account number is " + accountNumber;
+    } else if (text == "1*2") {
+        const accountBalance = "420,690.00 MT";
+        response = "END Your account balance is " + accountBalance;
+    }
+
+    //Send the response back to API
+    res.set('Content-Type: text/plain');
+    res.send(response);
     
 })
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
 
-exports.helloWorld = onRequest((request, response) => {
-   logger.info("Hello logs!", {structuredData: true});
-   response.send("Bem vindo /n tudo bem?");
-});
+exports.ussd = onRequest(app);
